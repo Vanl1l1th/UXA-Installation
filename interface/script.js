@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
   $(function(){
-    var client = mqtt.connect('mqtt://d905e6b1:7cdec6cd7950ec48@broker.shiftr.io', {
+    var client = mqtt.connect('userconnection', {
       clientId: 'd905e6b1'
     });
 

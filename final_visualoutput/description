@@ -1,4 +1,4 @@
 the output is generatet with the input a user tips into the interface.
-The interface and the processing sketch is connected through the website https://shiftr.io the link to connect the user with the website isn't correct in this code fil(you have to create your own connection)
-The processing sketch uses the openkinect libary to make the visual output interacktive and respondto your movements.
+The interface and the processing sketch is connected through the website https://shiftr.io the link to connect the user with the website isn't correct in this code file(you have to create your own connection)
+The processing sketch uses the openkinect libary to make the visual output interactive and responsive to your movements.
 

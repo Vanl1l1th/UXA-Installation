@@ -28,7 +28,7 @@ void setup() {
   userPos=new ArrayList<PVector>();
   
   client = new MQTTClient(this);
-  client.connect("mqtt://bff8033f:ad10caddad95db25@broker.shiftr.io");
+  client.connect("userconnection"); //enter here your connection to connect with the interface
   client.subscribe("/example");
 }
 

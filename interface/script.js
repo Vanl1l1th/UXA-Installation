@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
   $(function(){
-    var client = mqtt.connect('userconnection', {
+    var client = mqtt.connect('mqtt://d905e6b1:7cdec6cd7950ec48@broker.shiftr.io', {
       clientId: 'd905e6b1'
     });
 
@@ -13,11 +13,15 @@ $(document).ready(function(){
     client.on('message', function(topic, message) {
       console.log('new message:', topic, message.toString());
     });
-    $('#answer').on('keyup',function(){
+    $('#answer').on('keyup',function(e){
       var an=$(this).val();
       var index=an.length;
       var letter=an.charAt(index-1);
-      client.publish('/example',letter);
+      if (e.keyCode == 13){$('h1').text(questions[counter]);
+      counter=counter+1;
+      $('#answer').val("");}
+      else{client.publish('/example',letter);}
+
     });
 
     $('#reloadbutton').on('click',function(){
@@ -28,7 +32,7 @@ $(document).ready(function(){
     });
 
   });
-var questions=["What's your favorite color?", "What's your age?", "What's your pets name?", "What's your email address?", "How many cigarettes do you smoke?", "What's your favorite city?", "What's the last message you sent?", "Who is the last person you messaged to?", "What languages do you speak?", "What's your phone number?","Thank you for giving us your data.\n In this case you can rest asure that we won't misuse it, but keep in mind that others could."];
+var questions=["What's your age?", "What's your zip-code?", "What's your favorite city?", "Who is the last person you messaged to?", "What's your mother tongue?", "What's your phone number?","Thank you for giving us your data.\n In this case you can rest assure that we will not misuse it, but keep in mind that others could."];
 var counter=0;
 $('#answer').keypress(function(){
   $('#next').show();

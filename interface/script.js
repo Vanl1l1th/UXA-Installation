@@ -30,6 +30,8 @@ var questions=["What's your age?", "What's your zip-code?", "What's your favorit
     }
       if(counter==6){var out= laOutput.toString(); client.publish('/kinect',out);}
       counter=counter+1;
+      audio++; var a= audio.toString();
+      client.publish('/audio',a);
       $('#answer').val("");}
       else{client.publish('/kinect',letter);}
     });
@@ -40,6 +42,7 @@ var questions=["What's your age?", "What's your zip-code?", "What's your favorit
       counter=0;
       audio=0;
       client.publish('/kinect',"1111");
+      client.publish('/audio',"1111");
       $('#start').show();
       $('#next').hide();
       $('#reloadbutton').hide();

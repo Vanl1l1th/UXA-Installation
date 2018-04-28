@@ -6,9 +6,11 @@ MQTTClient client;
 Kinect kinect;
 
 int minDepth =  60;
-int maxDepth = 960;
+int maxDepth = 885;
+boolean end=false;
 ArrayList <PVector> userPos;
 String input= "";
+String trans= "";
 char letter;
 ArrayList<Node> nodes= new ArrayList<Node>();
 ArrayList<Connection> con= new ArrayList<Connection>();
@@ -21,15 +23,15 @@ PVector footMax=new PVector(0,0);
 float rel;
 int counter2=0;
 void setup() {
-  //size(640, 480);
-  fullScreen();
+  size(640, 480);
+  //fullScreen();
   kinect = new Kinect(this);
   kinect.initDepth();
   userPos=new ArrayList<PVector>();
   
   client = new MQTTClient(this);
-  client.connect("userconnection"); //enter here your connection to connect with the interface
-  client.subscribe("/example");
+  client.connect("mqtt://bff8033f:ad10caddad95db25@broker.shiftr.io");
+  client.subscribe("/kinect");
 }
 
 void draw() {
@@ -38,6 +40,7 @@ userPos.clear();
 userDet();
 //background(0);
 //println(userPos.size());
+if(nodes.size()>0){
  for(Node n: nodes){
   n.display();
   n.repulse();
@@ -46,8 +49,13 @@ userDet();
   c.display(); c.update();
  }
  for(Web w:webs){w.display();}
- //fill(255,0,0);
-//ellipse(footMax.x,footMax.y,5,5);
+ if(end==true){textSize(height/20);
+ rectMode(CENTER); 
+ text(trans,width/4,height/2);}
+ }
+ else{fill(255); textSize(height/10);
+ rectMode(CENTER); 
+ text("Welcome!",width/4,height/2);}
 }
 
 void userDet(){
@@ -59,8 +67,7 @@ float minx=1000; float maxx=0; float miny=1000; float maxy=0;
     float x=i%640; float y=(i-x)/640; float xr=640-x-1;
      int ir=int(xr+(640*y));
     if (rawDepth[i] >= minDepth && rawDepth[i] <= maxDepth) {
-     if(counter%10==0){int c=0;
-     if(nodes.size()<150){ c=nodes.size();}else{c=150;}
+     if(counter%10==0){int c=150;
      pixels[ir] = color(c);}else{pixels[ir]=color(0);}
      
      PVector p=new PVector(xr,y); userPos.add(p);
@@ -83,11 +90,12 @@ float minx=1000; float maxx=0; float miny=1000; float maxy=0;
  }
  if(starter2==true){
  nodes.add(new Node(c,false,nodes)); con.add(new Connection(sNode,nodes.get(nodes.size()-1)));
+ nodes.add(new Node(c,false,nodes)); con.add(new Connection(sNode,nodes.get(nodes.size()-1)));
  nodes.add(new Node(c,false,nodes)); con.add(new Connection(sNode,nodes.get(nodes.size()-1)));}
  else{nodes.add(new Node(c,true,nodes));}
  if(pnode!=null){con.add(new Connection(pnode,nodes.get(nodes.size()-1))); con.get(con.size()-1).subcon=false;}
  pnode=nodes.get(nodes.size()-1);
- if(counter2%10==0){
+ if(counter2%6==0){
  webs.add(new Web(pnode));} counter2++;
  //println(con.size());
 }
@@ -118,8 +126,9 @@ else{con.clear(); nodes.clear(); pnode=null; input="";}
 void messageReceived(String topic, byte[] payload) {
   println("new message: " + topic + " - " + new String(payload));
   String st=new String(payload);
-  if(st.length()>2){nodes.clear(); webs.clear(); con.clear();}
-  else{
+  if(st.length()==4){nodes.clear(); webs.clear(); con.clear(); end=false;}
+  else if(st.length()==1){
   letter=st.charAt(0);
   readInput();}
+  else{ trans=st; end=true;}
 }

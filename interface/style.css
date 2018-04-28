@@ -25,6 +25,18 @@ h1 {
   font-family: 'Source Sans Pro', sans-serif;
   margin-top: 20px;
 }
+#start{
+  background-color: #000;
+  border-radius: 3px;
+  border: 2px solid white;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: 'Source Sans Pro', sans-serif;
+  margin-top: 20px;
+}
 
 input[type=string] {
   width: 50%;

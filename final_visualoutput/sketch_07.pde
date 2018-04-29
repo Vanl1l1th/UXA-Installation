@@ -30,7 +30,7 @@ void setup() {
   userPos=new ArrayList<PVector>();
   
   client = new MQTTClient(this);
-  client.connect("mqtt://bff8033f:ad10caddad95db25@broker.shiftr.io");
+  client.connect("your connectioncode goes in there");
   client.subscribe("/kinect");
 }
 

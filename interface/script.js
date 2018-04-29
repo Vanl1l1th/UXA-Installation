@@ -6,7 +6,7 @@ $(document).ready(function(){
 var h=$("<h1>What's your name?</h1>");
 var questions=["What's your age?", "What's your zip-code?", "What's your favorite city?", "Who is the last person you messaged to?", "What's your mother tongue?", "What's your phone number?","Thank you for giving us your data.\n In this case you can rest assure that we will not misuse it, but keep in mind that others could."];
   $(function(){
-    var client = mqtt.connect('mqtt://d905e6b1:7cdec6cd7950ec48@broker.shiftr.io', {
+    var client = mqtt.connect('your connection link goes in there', {
       clientId: 'd905e6b1'
     });
 

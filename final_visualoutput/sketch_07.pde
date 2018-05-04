@@ -37,7 +37,7 @@ void setup() {
   myFont = createFont("MingLiU",height/20);
   
   client = new MQTTClient(this);
-  client.connect("mqtt://bff8033f:ad10caddad95db25@broker.shiftr.io");
+  client.connect("here goes your connection link");
   client.subscribe("/kinect");
   client.subscribe("/name");
 }

@@ -19,7 +19,7 @@ void setup() {
 
   
   client = new MQTTClient(this);
-  client.connect("mqtt://7b97772b:e0f7dff7fa444671@broker.shiftr.io");
+  client.connect("here goes your connection link");
   client.subscribe("/audio");
 }
 

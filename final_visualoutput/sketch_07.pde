@@ -4,13 +4,18 @@ import mqtt.*;
 MQTTClient client;
 
 Kinect kinect;
-
+PFont myFont;
 int minDepth =  60;
-int maxDepth = 885;
+int maxDepth = 940;
+int cO=0;
+int op=0;
 boolean end=false;
+boolean nam=false;
+boolean mir=false;
 ArrayList <PVector> userPos;
 String input= "";
 String trans= "";
+String name= "";
 char letter;
 ArrayList<Node> nodes= new ArrayList<Node>();
 ArrayList<Connection> con= new ArrayList<Connection>();
@@ -21,17 +26,20 @@ PVector handMax=new PVector(0,0);
 PVector footMin=new PVector(0,0);
 PVector footMax=new PVector(0,0);
 float rel;
+float xu=0;
 int counter2=0;
 void setup() {
-  size(640, 480);
-  //fullScreen();
+  //size(640, 480);
+  fullScreen();
   kinect = new Kinect(this);
   kinect.initDepth();
   userPos=new ArrayList<PVector>();
+  myFont = createFont("MingLiU",height/20);
   
   client = new MQTTClient(this);
-  client.connect("your connectioncode goes in there");
+  client.connect("mqtt://bff8033f:ad10caddad95db25@broker.shiftr.io");
   client.subscribe("/kinect");
+  client.subscribe("/name");
 }
 
 void draw() {
@@ -39,23 +47,31 @@ userPos.clear();
 //println(userPos.size());
 userDet();
 //background(0);
-//println(userPos.size());
-if(nodes.size()>0){
+println(xu);
+if(nodes.size()>0){//if(mir==true){pushMatrix();translate(xu,0);}
  for(Node n: nodes){
   n.display();
   n.repulse();
  }
  for(Connection c: con){
   c.display(); c.update();
- }
- for(Web w:webs){w.display();}
+ }//if(mir==true){popMatrix();}
+ for(Web w:webs){w.display();} 
  if(end==true){textSize(height/20);
+ textFont(myFont);
+ textAlign(CENTER);
  rectMode(CENTER); 
- text(trans,width/4,height/2);}
+ text(trans,width/2,height/2);
+ text(name,width/2,(height/2)+(height/19));
+ mir=true;}
+
  }
- else{fill(255); textSize(height/10);
- rectMode(CENTER); 
- text("Welcome!",width/4,height/2);}
+ else{fill(255); 
+ textFont(myFont);
+ rectMode(CENTER);
+ textAlign(CENTER);
+ textSize(height/10);
+ text("Welcome!",width/2,height/2); mir=false;}
 }
 
 void userDet(){
@@ -65,14 +81,14 @@ float minx=1000; float maxx=0; float miny=1000; float maxy=0;
   int[] rawDepth = kinect.getRawDepth();
   for (int i=0; i < rawDepth.length; i++) {
     float x=i%640; float y=(i-x)/640; float xr=640-x-1;
-     int ir=int(xr+(640*y));
+     int ir=int(xr+(640*y)); 
     if (rawDepth[i] >= minDepth && rawDepth[i] <= maxDepth) {
      if(counter%10==0){int c=150;
-     pixels[ir] = color(c);}else{pixels[ir]=color(0);}
+     pixels[ir] = color(c); xu=x;}else{pixels[ir]=color(0);}//if(frameCount%10==0){if(cO==0){op++;}if(cO==1){op--;}}if(op>255){cO=1;}if(op<10){cO=0;}}
      
-     PVector p=new PVector(xr,y); userPos.add(p);
+     PVector p=new PVector(xr,y);if(mir==true){p=new PVector(x,y);} userPos.add(p);
      if(minx>x){minx=x; handMin=p;} if(maxx<x){maxx=x; handMax=p;}
-     if(miny>y){miny=y; footMin=p;} if(maxy<y){maxy=y; footMax=p;}    } else{pixels[ir]=color(0);}
+     if(miny>y){miny=y; footMin=p;} if(maxy<y){maxy=y; footMax=p;}    } else{pixels[ir]=color(0);}//if(frameCount%10==0){if(cO==0){op++;}if(cO==1){op--;}}if(op>255){cO=1;}if(op<10){cO=0;}}
   counter++;}
  rel=(maxx-minx)/(maxy-miny);
  //println(rel);
@@ -124,11 +140,14 @@ else{con.clear(); nodes.clear(); pnode=null; input="";}
 }
 
 void messageReceived(String topic, byte[] payload) {
-  println("new message: " + topic + " - " + new String(payload));
+  //println("new message: " + topic + " - " + new String(payload));
   String st=new String(payload);
+  char s=topic.charAt(1);
+  if(s=='n'){name=st;}
+  else if(s=='k'){
   if(st.length()==4){nodes.clear(); webs.clear(); con.clear(); end=false;}
   else if(st.length()==1){
   letter=st.charAt(0);
   readInput();}
-  else{ trans=st; end=true;}
+  else{ trans=st; end=true; nam=false;}}
 }
